@@ -39,3 +39,9 @@ class Fox():
     def blitme(self):
         """Рисует модель лисы в текущей позиции"""
         self.screen.blit(self.image, self.rect)
+
+
+    def center_fox(self):
+        """Центрирует модель лисы на экране"""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)

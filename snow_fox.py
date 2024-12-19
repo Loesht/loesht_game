@@ -4,6 +4,7 @@ import pygame
 
 from settings import Settings
 from fox import Fox
+from bullet import Bullet
 
 class SnowFox:
     """Класс для управления ресурсами и поведением игры"""
@@ -21,13 +22,14 @@ class SnowFox:
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Snow Fox")
         self.fox = Fox(self)
-        
+        self.bullets = pygame.sprite.Group()
 
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:
             self._check_events()
             self.fox.update()
+            self.bullets.update()
             self._update_screen()
 
 
@@ -51,6 +53,8 @@ class SnowFox:
             self.fox.moving_left = True
         elif event.key == pygame.K_ESCAPE:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
 
     def _check_keyup_events(self, event):
@@ -61,10 +65,18 @@ class SnowFox:
             self.fox.moving_left = False
 
 
+    def _fire_bullet(self):
+        """Создание нового снаряда-снежка и включение его в группу bullets."""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
+
+
     def _update_screen(self):
         """Обновляет изображение на экране и отображает новый экран"""
         self.screen.fill(self.settings.bg_color)
         self.fox.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         pygame.display.flip()
 
 
