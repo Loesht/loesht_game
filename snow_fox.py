@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from settings import Settings
+from fox import Fox
 
 class SnowFox:
     """Класс для управления ресурсами и поведением игры"""
@@ -11,6 +12,7 @@ class SnowFox:
         """Инициализирует игру и создает игровые ресурсы"""
         pygame.init()
         self.settings = Settings()
+        
 
         # Назначение цвета фона
         self.bg_color = (214, 234, 236)
@@ -18,6 +20,8 @@ class SnowFox:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Snow Fox")
+        self.fox = Fox(self)
+        
 
     def run_game(self):
         """Запуск основного цикла игры"""
@@ -29,6 +33,7 @@ class SnowFox:
 
             # При каждом проходе цикла перерисовывается экран
             self.screen.fill(self.settings.bg_color)
+            self.fox.blitme()
 
             # Отображение последнего прорисованного экрана.
             pygame.display.flip()
