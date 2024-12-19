@@ -7,3 +7,6 @@ class Settings():
         self.screen_width = 1200
         self.screen_height = 800
         self.bg_color = (214, 234, 236)
+
+        # Настройки модели лисы
+        self.fox_speed = 1.5

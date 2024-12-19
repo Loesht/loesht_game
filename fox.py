@@ -6,6 +6,7 @@ class Fox():
     def __init__(self, sf_game):
         """Инициализирует модель лисы и задает ее начальное положение"""
         self.screen = sf_game.screen
+        self.settings = sf_game.settings
         self.screen_rect = self.screen.get_rect()
 
         # Загружает изображение корабля и получает прямоугольник
@@ -14,6 +15,26 @@ class Fox():
 
         # Каждая новая модель лисы появляется у нижней части экрана
         self.rect.midbottom = self.screen_rect.midbottom
+
+        # Сохранение вещественной координаты центра модели лисы
+        self.x = float(self.rect.x)
+
+        # Флаг перемещения
+        self.moving_right = False
+        self.moving_left = False
+
+
+    def update(self):
+        """Обновляет позицию лисы с учетом флагов"""
+        # Обновляется атрибут x, не rect
+        if self.moving_right:
+            self.x += self.settings.fox_speed
+        if self.moving_left:
+            self.x -= self.settings.fox_speed
+
+        # Обновление атрибута rect на основании self.x
+        self.rect.x = self.x
+
 
     def blitme(self):
         """Рисует модель лисы в текущей позиции"""
