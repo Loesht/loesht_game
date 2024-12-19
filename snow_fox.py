@@ -49,6 +49,8 @@ class SnowFox:
             self.fox.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.fox.moving_left = True
+        elif event.key == pygame.K_ESCAPE:
+            sys.exit()
 
 
     def _check_keyup_events(self, event):
