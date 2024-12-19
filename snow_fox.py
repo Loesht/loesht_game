@@ -12,13 +12,13 @@ class SnowFox:
         """Инициализирует игру и создает игровые ресурсы"""
         pygame.init()
         self.settings = Settings()
-        
 
         # Назначение цвета фона
         self.bg_color = (214, 234, 236)
 
-        self.screen = pygame.display.set_mode(
-            (self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.settings.screen_width = self.screen.get_rect().width
+        self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Snow Fox")
         self.fox = Fox(self)
         
