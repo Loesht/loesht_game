@@ -20,7 +20,7 @@ class Bullet(Sprite):
         # Обновление позиции снаряда в вещественном формате
         self.y -= self.settings.bullet_speed
         # Обновление позиции круга
-        if self.y < 0:
+        if self.y <= 0:
             self.kill()
 
 

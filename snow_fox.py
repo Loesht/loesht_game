@@ -5,6 +5,7 @@ import pygame
 from settings import Settings
 from fox import Fox
 from bullet import Bullet
+from bear import Bear
 
 class SnowFox:
     """Класс для управления ресурсами и поведением игры"""
@@ -24,15 +25,25 @@ class SnowFox:
         self.fox = Fox(self)
         self.bullets = pygame.sprite.Group()
 
+        self.bears = pygame.sprite.Group()
+        self._create_flock()
+
+
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:
             self._check_events()
             self.fox.update()
             self.bullets.update()
+            
+            # Удаление снарядов при выходе за пределы экрана
+            for bullet in self.bullets.copy():
+                if bullet.y <= 0:
+                    self.bullets.remove(bullet)
+            
             self._update_screen()
-
-
+ 
+           
     def _check_events(self):
         """Обрабатывает нажатия клавишь и события мыши."""
         for event in pygame.event.get():
@@ -71,12 +82,20 @@ class SnowFox:
         self.bullets.add(new_bullet)
 
 
+    def _create_flock(self):
+        """Создание флота вторжения"""
+        # Создание пришельца
+        bear = Bear(self)
+        self.bears.add(bear)
+
+
     def _update_screen(self):
         """Обновляет изображение на экране и отображает новый экран"""
         self.screen.fill(self.settings.bg_color)
         self.fox.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        self.bears.draw(self.screen)
         pygame.display.flip()
 
 
