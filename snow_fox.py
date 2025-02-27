@@ -35,6 +35,8 @@ class SnowFox:
             self._check_events()
             self.fox.update()
             self.bullets.update()
+            self._check_flock_edges()
+            self.bears.update()
             
             # Удаление снарядов при выходе за пределы экрана
             for bullet in self.bullets.copy():
@@ -83,10 +85,49 @@ class SnowFox:
 
 
     def _create_flock(self):
-        """Создание флота вторжения"""
-        # Создание пришельца
+        """Создание стаи медведей"""
+        # Создание медведя и вычисление кол-ва медведей в ряду
+        # Интервал между соседними медвеями равен ширине медведя
         bear = Bear(self)
+        bear_width, bear_height = bear.rect.size
+        available_space_x = self.settings.screen_width - (2 * bear_width)
+        number_bear_x = available_space_x // (2 * bear_width)
+
+        """Определяет кол-во рядов, помещающихся на экране"""
+        fox_height = self.fox.rect.height
+        available_space_y = (self.settings.screen_height - 
+                             (3 * bear_height) - fox_height)
+        number_rows = available_space_y // (2 * fox_height)
+
+        # Создание стаи
+        for row_number in range(number_rows):
+            for bear_number in range(number_bear_x):
+                self._create_bear(bear_number, row_number)
+
+
+    def _create_bear(self, bear_number, row_number):
+        # Создание медведя и его размещение в ряду
+        bear = Bear(self)
+        bear_width, bear_height = bear.rect.size
+        bear.x = bear_width + 2 * bear_width * bear_number
+        bear.rect.x = bear.x
+        bear.rect.y = bear.rect.height + 2 * bear.rect.height * row_number
         self.bears.add(bear)
+
+
+    def _check_flock_edges(self):
+        """Реагирует на достижение медведем  края экрана"""
+        for bear in self.bears.sprites():
+            if bear.check_edges():
+                self._change_flock_direction()
+                break
+
+
+    def _change_flock_direction(self):
+        """Опускает всю стаю и меняет направление движения флота"""
+        for bear in self.bears.sprites():
+            bear.rect.y += self.settings.flock_drop_speed
+        self.settings.flock_direction *= -1
 
 
     def _update_screen(self):

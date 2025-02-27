@@ -16,3 +16,9 @@ class Settings():
         self.bullet_radius = 10
         self.bullet_color = (255, 255, 255)
         self.bullets_allowed = 3
+
+        # Настройки медведей
+        self.bear_speed = 1.0
+        self.flock_drop_speed = 10
+        # flock_direction = 1 движение вправо, -1 движение влево
+        self.flock_direction = 1
