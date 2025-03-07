@@ -24,6 +24,10 @@ class SnowFox:
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Snow Fox")
+
+        # Создание экземпляра для хранения игровой статистики
+        self.stats = GameStats(self)
+
         self.fox = Fox(self)
         self.bullets = pygame.sprite.Group()
 
@@ -99,7 +103,10 @@ class SnowFox:
          # Проверка коллизий медведя и лисы
         if pygame.sprite.spritecollide(self.fox, self.bears, 
                                        dokill=True):
-            print("Fox hit!!!")
+            self._fox_hit()
+
+        # Проверка достижения медведем нижнего края экрана.
+        self._check_bears_bottom()
         
         # Уничтожение снарядов и создание новой стаи
         if not self.bears:
@@ -138,6 +145,16 @@ class SnowFox:
         self.bears.add(bear)
 
 
+    def _check_bears_bottom(self):
+        """Проверяет, добрались ли медведи до нижнего края экрана."""
+        screen_rect = self.screen.get_rect()
+        for bear in self.bears.sprites():
+            if bear.rect.bottom >= screen_rect.bottom:
+                # Выполняется то же, что при столкновении с лисой
+                self._fox_hit
+                break
+
+
     def _check_flock_edges(self):
         """Реагирует на достижение медведем  края экрана"""
         for bear in self.bears.sprites():
@@ -151,6 +168,23 @@ class SnowFox:
         for bear in self.bears.sprites():
             bear.rect.y += self.settings.flock_drop_speed
         self.settings.flock_direction *= -1
+
+
+    def _fox_hit(self):
+        """Обрабатывает столкновение лисы с медведями"""
+        # Уменьшение foxes_left (кол-ва медведей) на 1.
+        self.stats.foxes_left -= 1
+
+        # Очистка списков медведей и снарядов
+        self.bears.empty()
+        self.bullets.empty()
+
+        # Создание новой стаи и размещение лисы в центре
+        self._create_flock()
+        self.fox.center_fox()
+
+        # Пауза
+        sleep(0.5)
 
 
     def _update_screen(self):
