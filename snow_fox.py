@@ -173,18 +173,24 @@ class SnowFox:
     def _fox_hit(self):
         """Обрабатывает столкновение лисы с медведями"""
         # Уменьшение foxes_left (кол-ва медведей) на 1.
-        self.stats.foxes_left -= 1
+        # Пока остается хотя бы один корабль, игра продолжается
+        if self.stats.foxes_left > 0:
+            self.stats.foxes_left -= 1
 
-        # Очистка списков медведей и снарядов
-        self.bears.empty()
-        self.bullets.empty()
+            # Очистка списков медведей и снарядов
+            self.bears.empty()
+            self.bullets.empty()
 
-        # Создание новой стаи и размещение лисы в центре
-        self._create_flock()
-        self.fox.center_fox()
+            # Создание новой стаи и размещение лисы в центре
+            self._create_flock()
+            self.fox.center_fox()
 
-        # Пауза
-        sleep(0.5)
+            # Пауза
+            sleep(0.5)
+
+        # Когда корабли заканчиваются, игра завершается
+        else:
+            self.stats.game_active = False
 
 
     def _update_screen(self):
