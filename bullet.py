@@ -14,11 +14,17 @@ class Bullet(Sprite):
         self.x = float(sf_game.fox.rect.centerx)
         self.y = float(sf_game.fox.rect.top)
 
+        # Инициализация прямоугольника для коллизии
+        self.rect = pygame.Rect(0, 0, self.radius * 2, self.radius * 2)
+        self.rect.centerx = self.x
+        self.rect.top = self.y
+
 
     def update(self):
         """Перемещает снаряд-снежок вверх по экрану"""
         # Обновление позиции снаряда в вещественном формате
         self.y -= self.settings.bullet_speed
+        self.rect.y = self.y
         # Обновление позиции круга
         if self.y <= 0:
             self.kill()

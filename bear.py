@@ -30,7 +30,7 @@ class Bear(Sprite):
 
 
     def update(self):
-        """Перемещает пришелца вправо или влево"""
+        """Перемещает медведя вправо или влево"""
         self.x += self.settings.bear_speed * self.settings.flock_direction
-        self.rect.x = self.x
+        self.rect.x = self.x 
 

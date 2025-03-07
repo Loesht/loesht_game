@@ -10,10 +10,11 @@ class Settings():
 
         # Настройки модели лисы
         self.fox_speed = 1.5
+        self.fox_limit = 3
 
         # Параметры снаряда
-        self.bullet_speed = 1
-        self.bullet_radius = 10
+        self.bullet_speed = 1.5
+        self.bullet_radius = 20
         self.bullet_color = (255, 255, 255)
         self.bullets_allowed = 3
 

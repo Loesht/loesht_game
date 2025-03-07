@@ -1,8 +1,10 @@
 import sys
+from time import sleep
 
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from fox import Fox
 from bullet import Bullet
 from bear import Bear
@@ -37,12 +39,7 @@ class SnowFox:
             self.bullets.update()
             self._check_flock_edges()
             self.bears.update()
-            
-            # Удаление снарядов при выходе за пределы экрана
-            for bullet in self.bullets.copy():
-                if bullet.y <= 0:
-                    self.bullets.remove(bullet)
-            
+            self._update_bullets()
             self._update_screen()
  
            
@@ -82,6 +79,32 @@ class SnowFox:
         """Создание нового снаряда-снежка и включение его в группу bullets."""
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
+
+
+    def _update_bullets(self):
+         # Удаление снарядов при выходе за пределы экрана 
+        for bullet in self.bullets.copy():
+            if bullet.y <= 0:
+                self.bullets.remove(bullet)
+
+        self._check_bullet_bear_collision()
+
+
+    def _check_bullet_bear_collision(self):
+        """Обработка коллизии нарядов с медведями"""
+        # При попадании удалить снаряд и медведя
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.bears, True, True) 
+        
+         # Проверка коллизий медведя и лисы
+        if pygame.sprite.spritecollide(self.fox, self.bears, 
+                                       dokill=True):
+            print("Fox hit!!!")
+        
+        # Уничтожение снарядов и создание новой стаи
+        if not self.bears:
+            self.bullets.empty()
+            self._create_flock() 
 
 
     def _create_flock(self):
