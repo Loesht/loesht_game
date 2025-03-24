@@ -5,6 +5,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from fox import Fox
 from bullet import Bullet
 from bear import Bear
@@ -34,11 +35,15 @@ class SnowFox:
         self.bears = pygame.sprite.Group()
         self._create_flock()
 
+        #Создание кнопки Play
+        self.play_button = Button(self, "Play")
+
 
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:
             self._check_events()
+
             if self.stats.game_active:
                 self.fox.update()
                 self.bullets.update()
@@ -60,6 +65,30 @@ class SnowFox:
 
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+
+    def _check_play_button(self, mouse_pos):
+        """Запускает новую игру при нажатии кнопки Play"""
+        button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            #Сброс иговой статистики
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            #Очистка списка медведей и снежков
+            self.bears.empty()
+            self.bullets.empty()
+
+            #Создание новой стаи и размещение лис в центре
+            self._create_flock()
+            self.fox.center_fox()
+
+            #Указатель мыши скрывается
+            pygame.mouse.set_visible(False)
 
 
     def _check_keydown_events(self, event):
@@ -182,11 +211,11 @@ class SnowFox:
     def _fox_hit(self):
         """Обрабатывает столкновение лисы с медведями"""
         # Уменьшение foxes_left (кол-ва медведей) на 1.
-        # Пока остается хотя бы один корабль, игра продолжается
-        if self.stats.foxes_left > 0:
+        # Пока остается хотя бы одна лиса, игра продолжается
+        if self.stats.foxes_left > 1:
             self.stats.foxes_left -= 1
 
-            # Очистка списков медведей и снарядов
+            # Очистка списков медведей и снежков
             self.bears.empty()
             self.bullets.empty()
 
@@ -197,9 +226,10 @@ class SnowFox:
             # Пауза
             sleep(0.5)
 
-        # Когда корабли заканчиваются, игра завершается
+        # Когда лисы заканчиваются, игра завершается
         else:
             self.stats.game_active = False
+            pygame.mouse.set_visible(True)
 
 
     def _update_screen(self):
@@ -209,6 +239,11 @@ class SnowFox:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.bears.draw(self.screen)
+
+        # Кнопка Play отображается, если игра не активна
+        if not self.stats.game_active:
+            self.play_button.draw_button()
+
         pygame.display.flip()
 
 
