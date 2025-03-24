@@ -39,11 +39,13 @@ class SnowFox:
         """Запуск основного цикла игры"""
         while True:
             self._check_events()
-            self.fox.update()
-            self.bullets.update()
-            self._check_flock_edges()
-            self.bears.update()
-            self._update_bullets()
+            if self.stats.game_active:
+                self.fox.update()
+                self.bullets.update()
+                self._check_flock_edges()
+                self.bears.update()
+                self._check_fox_bear_collision()
+                self._update_bullets()
             self._update_screen()
  
            
@@ -112,6 +114,12 @@ class SnowFox:
         if not self.bears:
             self.bullets.empty()
             self._create_flock() 
+
+
+    def _check_fox_bear_collision(self):
+        """Проверка коллизий 'медведь - лиса'."""
+        if pygame.sprite.spritecollideany(self.fox, self.bears):
+            self._fox_hit()
 
 
     def _create_flock(self):
