@@ -45,6 +45,7 @@ class SnowFox:
                 self._check_flock_edges()
                 self.bears.update()
                 self._check_fox_bear_collision()
+                self._check_bears_bottom()
                 self._update_bullets()
             self._update_screen()
  
