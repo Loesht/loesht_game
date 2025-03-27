@@ -75,7 +75,8 @@ class SnowFox:
         """Запускает новую игру при нажатии кнопки Play"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            #Сброс иговой статистики
+            #Сброс иговых настроек
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
 
@@ -132,18 +133,19 @@ class SnowFox:
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.bears, True, True) 
         
+        # Проверка достижения медведем нижнего края экрана.
+        self._check_bears_bottom()
+
          # Проверка коллизий медведя и лисы
         if pygame.sprite.spritecollide(self.fox, self.bears, 
                                        dokill=True):
             self._fox_hit()
-
-        # Проверка достижения медведем нижнего края экрана.
-        self._check_bears_bottom()
         
         # Уничтожение снарядов и создание новой стаи
         if not self.bears:
             self.bullets.empty()
             self._create_flock() 
+            self.settings.increase_speed()
 
 
     def _check_fox_bear_collision(self):
@@ -189,7 +191,7 @@ class SnowFox:
         for bear in self.bears.sprites():
             if bear.rect.bottom >= screen_rect.bottom:
                 # Выполняется то же, что при столкновении с лисой
-                self._fox_hit
+                self._fox_hit()
                 break
 
 
