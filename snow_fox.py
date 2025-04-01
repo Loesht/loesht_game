@@ -5,6 +5,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from fox import Fox
 from bullet import Bullet
@@ -27,7 +28,9 @@ class SnowFox:
         pygame.display.set_caption("Snow Fox")
 
         # Создание экземпляра для хранения игровой статистики
+        # и панели результатов
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         self.fox = Fox(self)
         self.bullets = pygame.sprite.Group()
@@ -79,6 +82,7 @@ class SnowFox:
             self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()
 
             #Очистка списка медведей и снежков
             self.bears.empty()
@@ -127,31 +131,33 @@ class SnowFox:
         self._check_bullet_bear_collision()
 
 
+    def _check_fox_bear_collision(self):
+        """Проверка коллизий 'медведь - лиса'."""
+        if pygame.sprite.spritecollideany(self.fox, self.bears):
+            self._fox_hit()
+
+
     def _check_bullet_bear_collision(self):
         """Обработка коллизии нарядов с медведями"""
         # При попадании удалить снаряд и медведя
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.bears, True, True) 
-        
+            self.bullets, self.bears, True, True)
+
+        # Начисление очков за сбитых медведей и обновление рекордов
+        if collisions:
+            for bears in collisions.values():
+                self.stats.score += self.settings.bear_points * len(bears)
+            self.sb.prep_score()
+            self.sb.check_high_score()
+
         # Проверка достижения медведем нижнего края экрана.
         self._check_bears_bottom()
-
-         # Проверка коллизий медведя и лисы
-        if pygame.sprite.spritecollide(self.fox, self.bears, 
-                                       dokill=True):
-            self._fox_hit()
         
         # Уничтожение снарядов и создание новой стаи
         if not self.bears:
             self.bullets.empty()
             self._create_flock() 
             self.settings.increase_speed()
-
-
-    def _check_fox_bear_collision(self):
-        """Проверка коллизий 'медведь - лиса'."""
-        if pygame.sprite.spritecollideany(self.fox, self.bears):
-            self._fox_hit()
 
 
     def _create_flock(self):
@@ -241,6 +247,9 @@ class SnowFox:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.bears.draw(self.screen)
+
+        # Вывод информации о счете
+        self.sb.show_score()
 
         # Кнопка Play отображается, если игра не активна
         if not self.stats.game_active:

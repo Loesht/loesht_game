@@ -9,7 +9,11 @@ class GameStats():
         # Игра запускается в активном состоянии
         self.game_active = False
 
+        # Рекорд сохраняется
+        self.high_score = 0
+
 
     def reset_stats(self):
         """Инициализирует статистику, изменяющуюся в ходе игры"""
         self.foxes_left = self.settings.fox_limit
+        self.score = 0

@@ -25,6 +25,9 @@ class Settings():
         # Темп ускорения игры
         self.initialize_dynamic_settings()
         self.speedup_scale = 1.1
+
+        # Темп повышения стоимости медведей
+        self.score_scale = 1.5
         
 
 
@@ -37,9 +40,14 @@ class Settings():
         # flock_direction = 1 - движение вправо; -1 - влево
         self.flock_direction = 1
 
+        # Подсчет очков
+        self.bear_points = 50
+
 
     def increase_speed(self):
-        """Увеличивает настройки скорости"""
+        """Увеличивает настройки скорости и стоимость пришельцев"""
         self.fox_speed *= self.speedup_scale
         self.bullet_speed *= self.speedup_scale
         self.bear_speed *= self.speedup_scale
+
+        self.bear_points = int(self.bear_points * self.score_scale)
