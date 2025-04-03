@@ -1,10 +1,14 @@
 import pygame.font
+from pygame.sprite import Group
+
+from fox import Fox
 
 class Scoreboard():
     """Класс для вывода игровой статистики"""
 
     def __init__(self, sf_game):
         """Инициализирует атрибуты подсчета очков"""
+        self.sf_game = sf_game
         self.screen = sf_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = sf_game.settings
@@ -18,6 +22,7 @@ class Scoreboard():
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
+        self.prep_foxes()
 
 
     def prep_score(self):
@@ -59,6 +64,16 @@ class Scoreboard():
         self.level_rect.top = self.score_rect.bottom + 10
 
 
+    def prep_foxes(self):
+        """Сообщает количество оставшихся лис"""
+        self.foxes = Group()
+        for fox_number in range(self.stats.foxes_left):
+            fox = Fox(self.sf_game)
+            fox.rect.x = 10 + fox_number * fox.rect.width
+            fox.rect.y = 10
+            self.foxes.add(fox)
+
+
     def check_high_score(self):
         """Проверяет обновился ли рекорд"""
         if self.stats.score > self.stats.high_score:
@@ -71,3 +86,4 @@ class Scoreboard():
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
+        self.foxes.draw(self.screen)

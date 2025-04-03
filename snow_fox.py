@@ -84,6 +84,7 @@ class SnowFox:
             self.stats.game_active = True
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_foxes()
 
             #Очистка списка медведей и снежков
             self.bears.empty()
@@ -225,7 +226,9 @@ class SnowFox:
         # Уменьшение foxes_left (кол-ва медведей) на 1.
         # Пока остается хотя бы одна лиса, игра продолжается
         if self.stats.foxes_left > 1:
+            # Уменьшение количества кораблей и обновление панели счета
             self.stats.foxes_left -= 1
+            self.sb.prep_foxes()
 
             # Очистка списков медведей и снежков
             self.bears.empty()
