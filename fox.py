@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Fox():
+class Fox(Sprite):
     """Класс для управления моделью лисы"""
 
     def __init__(self, sf_game):
         """Инициализирует модель лисы и задает ее начальное положение"""
+        super().__init__()
         self.screen = sf_game.screen
         self.settings = sf_game.settings
         self.screen_rect = self.screen.get_rect()

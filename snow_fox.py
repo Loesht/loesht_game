@@ -83,6 +83,7 @@ class SnowFox:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
+            self.sb.prep_level()
 
             #Очистка списка медведей и снежков
             self.bears.empty()
@@ -138,7 +139,7 @@ class SnowFox:
 
 
     def _check_bullet_bear_collision(self):
-        """Обработка коллизии нарядов с медведями"""
+        """Обработка коллизии снарядов с медведями"""
         # При попадании удалить снаряд и медведя
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.bears, True, True)
@@ -158,6 +159,9 @@ class SnowFox:
             self.bullets.empty()
             self._create_flock() 
             self.settings.increase_speed()
+            # Увеличение уровня
+            self.stats.level += 1
+            self.sb.prep_level()
 
 
     def _create_flock(self):
