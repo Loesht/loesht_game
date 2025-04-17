@@ -105,6 +105,8 @@ class SnowFox:
         elif event.key == pygame.K_LEFT:
             self.fox.moving_left = True
         elif event.key == pygame.K_ESCAPE:
+            if self.sb.check_high_score() or not self.sb.save_score():
+                self.sb.save_score()
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
@@ -150,7 +152,8 @@ class SnowFox:
             for bears in collisions.values():
                 self.stats.score += self.settings.bear_points * len(bears)
             self.sb.prep_score()
-            self.sb.check_high_score()
+            if self.sb.check_high_score():
+                self.sb.save_score()
 
         # Проверка достижения медведем нижнего края экрана.
         self._check_bears_bottom()
@@ -261,7 +264,6 @@ class SnowFox:
         # Кнопка Play отображается, если игра не активна
         if not self.stats.game_active:
             self.play_button.draw_button()
-
         pygame.display.flip()
 
 

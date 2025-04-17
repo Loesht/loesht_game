@@ -11,10 +11,10 @@ class GameStats():
 
         # Рекорд сохраняется
         self.high_score = 0
-        self.level = 1
-
+        
 
     def reset_stats(self):
         """Инициализирует статистику, изменяющуюся в ходе игры"""
         self.foxes_left = self.settings.fox_limit
         self.score = 0
+        self.level = 1

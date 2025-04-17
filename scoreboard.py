@@ -1,3 +1,6 @@
+import json
+import os
+
 import pygame.font
 from pygame.sprite import Group
 
@@ -13,6 +16,7 @@ class Scoreboard():
         self.screen_rect = self.screen.get_rect()
         self.settings = sf_game.settings
         self.stats = sf_game.stats
+        self.stats.high_score = self.load_high_score()
 
         # Настройки шрифта для вывода счета
         self.text_color = (253, 106, 2)
@@ -41,7 +45,7 @@ class Scoreboard():
 
     def prep_high_score(self):
         """Преобразует рекордный счет в графическое изображение"""
-        high_score = round(self.stats.high_score, -1)
+        high_score = round(self.stats.high_score, 1)
         high_score_str = "{:,}".format(high_score)
         self.high_score_image = self.font.render(high_score_str, True,
                                 self.text_color, self.settings.bg_color)
@@ -74,11 +78,28 @@ class Scoreboard():
             self.foxes.add(fox)
 
 
+    def load_high_score(self):
+        """Загружает сохраненный рекорд из файла в новую игру""" 
+        try:  
+            with open('RECORD_FILE.json', 'r') as file:
+                data = json.load(file)
+                return data.get('high_score', 0)
+        except (json.JSONDecodeError, IOError):
+            return 0   
+            
+
     def check_high_score(self):
         """Проверяет обновился ли рекорд"""
         if self.stats.score > self.stats.high_score:
             self.stats.high_score = self.stats.score
             self.prep_high_score()
+
+
+    def save_score(self):
+        """Сохраняет рекорд в файл"""
+        data = {'high_score': self.stats.high_score}
+        with open('RECORD_FILE.json', 'w') as file:
+            json.dump(data, file)
 
 
     def show_score(self):
